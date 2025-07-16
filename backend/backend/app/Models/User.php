@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 
 namespace App\Models;
 
@@ -40,4 +40,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-}
+} -->
