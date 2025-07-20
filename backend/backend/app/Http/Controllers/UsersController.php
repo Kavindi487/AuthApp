@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -48,16 +49,17 @@ class UsersController extends Controller
             'password' => 'required|string|min:8|max:12',
         ]);
 
-       $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
-       if($user){
-        return response()->json([
-            'error' => 'Invalid Email'], 401);
-       }
-       elseif(!Hash::check($request->password, $user->password)){
-        return response()->json([
-            'error' => 'Invalid Password'], 401);
-         }
+        if (!$user) {
+            return response()->json([
+                'error' => 'Invalid Email'
+            ], 401);
+        } elseif (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'error' => 'Invalid Password'
+            ], 401);
+        }
 
 
         // Generate JWT token
@@ -78,9 +80,9 @@ class UsersController extends Controller
             return response()->json(['error' => 'Token Invalid'], 401);
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
             return response()->json(['error' => 'Token Expired'], 401);
-        } 
+        }
 
-     
+
 
         return response()->json([
             'message' => 'logged in successfully',
@@ -102,5 +104,4 @@ class UsersController extends Controller
             return response()->json(['error' => 'Failed to log out Invalid'], 401);
         }
     }
-
 }
